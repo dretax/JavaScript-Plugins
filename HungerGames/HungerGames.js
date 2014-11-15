@@ -279,6 +279,30 @@ function On_EntityHurt(HurtEvent) {
 					ini.Save();
 					HurtEvent.Attacker.Message("Added!");
 				}
+                else if (HurtEvent.Entity.Name == "Wood Box") {
+                    var locx = HurtEvent.Entity.X.toString();
+					var locy = HurtEvent.Entity.Y.toString();
+					var locz = HurtEvent.Entity.Z.toString();
+					var ini = HungerGames();
+					var sec = ini.EnumSection("RandomChests");
+					var count = sec.Length;
+					count = count + 1;
+					ini.AddSetting("RandomChests", count, "(" + locx + ", " + locy + ", " + locz + ")");
+					ini.Save();
+					HurtEvent.Attacker.Message("Added!");
+                }
+                else if (HurtEvent.Entity.Name == "Wood Box Large") {
+                    var locx = HurtEvent.Entity.X.toString();
+					var locy = HurtEvent.Entity.Y.toString();
+					var locz = HurtEvent.Entity.Z.toString();
+					var ini = HungerGames();
+					var sec = ini.EnumSection("RandomChests");
+					var count = sec.Length;
+					count = count + 1;
+					ini.AddSetting("RandomChests", count, "(" + locx + ", " + locy + ", " + locz + ")");
+					ini.Save();
+					HurtEvent.Attacker.Message("Added!");
+                }
 			}
 		}
 	}
@@ -343,6 +367,7 @@ function DestroyDoors() {
 
 function LaunchEvent() {
 	if (isstarted == 0) {
+        RandomItems();
 		DestroyDoors();
 		Time.CreateTimer("Protection", 60000).Start();
 		Server.BroadcastFrom(sysname, purple + "Hunger Games Started!");
@@ -351,10 +376,15 @@ function LaunchEvent() {
 	}
 }
 
-/*function On_PluginInit() {
-	DataStore.Flush("HungerGamesP");
-	DataStore.Flush("HungerGamesL");
-}*/
+function RandomItems() {
+	var ini = HungerGames();
+    sec = ini.EnumSection("RandomChests");
+    for (number in sec) {
+        chest = ini.GetSetting("RandomChests", number);
+        inventory = chest.Inventory;
+        //Todo finish the random weapons here
+    }
+}
 
 function On_PlayerDisconnected(Player) {
 	var id = Player.SteamID;
@@ -530,13 +560,7 @@ function On_PlayerHurt(HurtEvent) {
 				HurtEvent.DamageAmount = dmg - dmg;
 				attacker.MessageFrom(sysname, "You can't kill players, protection is still active!");
 			}
-		}	
-		else {
-			return;
 		}
-	}
-	else {
-		return;
 	}
 }
 
