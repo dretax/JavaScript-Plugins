@@ -1,12 +1,6 @@
-//Fougerite
 /**
  * Created by DreTaX on 2014.04.03.. V2.7.0
  */
- 
-function On_PluginInit() {
-	DataStore.Flush("EquinoxAntiCheat");
-	Plugin.CreateTimer("CheckLOC", 5000).Start();
-}
 
 function On_Command(Player, cmd, args) {
     switch(cmd) {
@@ -45,18 +39,6 @@ function On_Command(Player, cmd, args) {
 }
 function On_PlayerKilled(DeathEvent) {
     if (DeathEvent.Attacker != DeathEvent.Victim && DeathEvent.DamageType != null && DeathEvent.Victim != null && DeathEvent.Attacker != null && DeathEvent.DamageEvent.bodyPart != null && !IsAnimal(DeathEvent.Attacker.Name)) {
-        //Cfg
-		/*var autoban = Data.GetConfigValue("DeathMSG", "Settings", "autoban");
-		var message = Data.GetConfigValue("DeathMSG", "Settings", "msg");
-		var bmessage = Data.GetConfigValue("DeathMSG", "Settings", "bmsg");
-		var banmessage = Data.GetConfigValue("DeathMSG", "Settings", "banmsg");
-		var explosionmsg = Data.GetConfigValue("DeathMSG", "Settings", "explosionmsg");
-		var huntingbow = Data.GetConfigValue("DeathMSG", "Settings", "huntingbow");
-		var deathmsgname = Data.GetConfigValue("DeathMSG", "Settings", "deathmsgname");
-		var enablekilllog = Data.GetConfigValue("DeathMSG", "Settings", "killog");
-		var tpamsg = Data.GetConfigValue("DeathMSG", "Settings", "TpaMsg");
-		var tpbackonimpossibleshot = Data.GetConfigValue("DeathMSG", "Settings", "tpbackonimpossibleshot");
-		var tpbackmsg = Data.GetConfigValue("DeathMSG", "Settings", "tpbackmsg");*/
 		var config = DeathMSGConfig();
 		var autoban = config.GetSetting("Settings", "autoban");
 		var message = config.GetSetting("Settings", "msg");
@@ -156,7 +138,7 @@ function On_PlayerKilled(DeathEvent) {
 				if (weapon != null) {
 					Server.BroadcastFrom(deathmsgname, n);
 				}
-				else if (weapon == undefined) {
+                else {
 					if (damage == 75) {
 						var hn = huntingbow.replace("victim", victim);
 						hn = hn.replace("killer", killer);
@@ -277,55 +259,6 @@ function On_PlayerSpawned(Player, SpawnEvent) {
 	var hackc = config.GetSetting("Settings", "FlySpeedCheck");
 	if (hackc == 0) return;
 	DataStore.Add('EquinoxAntiCheat', id, Player.X+", "+Player.Y+", "+Player.Z);
-}
-
-function CheckLOCCallback() {
-	Plugin.KillTimer("CheckLOC");
-	var config = DeathMSGConfig();
-	var hackc = config.GetSetting("Settings", "FlySpeedCheck");
-	if (hackc == 0) {return}
-	var currentlist = Server.Players;
-	var id;
-	var name;
-	for (var player in currentlist) {
-		try {
-			id = player.SteamID;
-			name = player.Name;
-		} catch (err) {
-			Plugin.Log("DeathMSGError", "Error caught at timer");
-			continue;
-		}
-		var tpfriendteleport = DataStore.Get("tpfriendautoban", id);
-		var hometeleport = DataStore.Add("homesystemautoban", id);
-		if (!player.Admin && !isMod(id) && tpfriendteleport != "using" && hometeleport != "using") {
-			var loc = player.Location;
-			if (DataStore.Get("EquinoxAntiCheat", id) == undefined) {
-				DataStore.Add('EquinoxAntiCheat', id, player.X+", "+player.Y+", "+player.Z);
-				continue;
-			}
-			var locl = DataStore.Get("EquinoxAntiCheat", id).split(",");
-			var vector = Util.CreateVector(locl[0], locl[1], locl[2]);
-			var dist = Util.GetVectorsDistance(vector, loc);
-			var ndist = Number(dist).toFixed(2);
-			var nyan = (parseInt(player.Y) - parseInt(locl[1]));
-			var ndistt = Number(nyan).toFixed(2);
-			//Server.Broadcast("sas" + ndistt + " " + ndist);
-			if (ndistt > 23 && ndistt > 0) {
-				player.Message("You moved too fast!");
-				Server.Broadcast(name + " was moving too fast. Kicked.");
-				player.Disconnect();
-				continue;
-			}
-			if (ndist >= 43 && ndistt > 0) {
-				player.Message("You moved too fast!");
-				Server.Broadcast(name + " was moving too fast. Kicked.");
-				player.Disconnect();
-				continue;
-			}
-			DataStore.Add('EquinoxAntiCheat', id, player.X+", "+player.Y+", "+player.Z);
-		}
-	}
-	Plugin.CreateTimer("CheckLOC", 5000).Start();
 }
 
 function isMod(id) {
