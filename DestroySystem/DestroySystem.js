@@ -93,6 +93,9 @@ function On_EntityHurt(HurtEvent){
 						else if(EntityName == "Wood Box") {
 							HurtEvent.Attacker.Inventory.AddItem("Wood Storage Box");
 						}
+                        else if (EntityName == "Wood Box Large") {
+                            HurtEvent.Attacker.Inventory.AddItem("Large Wood Storage");
+                        }
 						else if(EntityName == "Metal Bars Window") {
 							HurtEvent.Attacker.Inventory.AddItem("Metal Window Bars");
 						}
