@@ -5,7 +5,7 @@
 var HomeSystem = {
     name: 		'HomeSystem',
     author: 	'DreTaX',
-    version: 	'2.4.5'
+    version: 	'2.4.6'
 };
 
 var BZHJ = {
@@ -419,7 +419,8 @@ function On_Command(Player, cmd, args) {
                     var home = args[0].toString();
                     var ini = Homes();
                     var id = Player.SteamID;
-                    var maxh = config.GetSetting("Settings", "Maxhomes");
+                    var maxh = DonatorRankCheck(id);
+                    //var maxh = config.GetSetting("Settings", "Maxhomes");
                     var checkforit = config.GetSetting("Settings", "DistanceCheck");
 					var checkwall = config.GetSetting("Settings", "CheckCloseWall");
 					// Check if this shit is null before making mistakes -.-
@@ -872,9 +873,27 @@ function CheckIfEmpty(id) {
 	var checkdist = ini.EnumSection(id);
 	for (var home in checkdist) {
 		var homes = ini.GetSetting(id, home);
-		if (homes && homes != null) return true;
-		else return false;
+		if (homes && homes != null) {
+            return true;
+        }
+		return false;
 	}
+}
+
+function DonatorRankCheck(id) {
+    if (DataStore.Get("MaxHomes", id) != null) {
+        var maxh = DataStore.Get("MaxHomes", id);
+        return maxh;
+    } else {
+        if (DataStore.Get("DonatorRank", "PlayerHomesMax") != null) {
+            var maxh = DataStore.Get("DonatorRank", "PlayerHomesMax");
+            return maxh;
+        } else {
+            var config = HomeConfig();
+            var maxh = config.GetSetting("Settings", "Maxhomes");
+            return maxh;
+        }
+    }
 }
 
 function On_EntityDeployed(Player, Entity) {
