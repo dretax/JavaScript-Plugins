@@ -123,21 +123,24 @@ function TPAJobTimerCallback(){
 							BZTJ.killJob(params[0]);
 						}
                     break;
-					
+
 					case "autokill":
 						var playerfrom = BZTJ.getPlayer(params[0]);
 						var playerto = BZTJ.getPlayer(params[1]);
-						if (playerfrom != null) {
-							DataStore.Add("tpfriendpending", params[0], null);
-							DataStore.Add("tpfriendpending2",  params[1], null);
-							DataStore.Add("tpfriendcooldown", params[0], 7);
-							DataStore.Add("tpfriendautoban", params[0], "none");
-							playerfrom.MessageFrom(systemname, "Teleport request timed out");
-						}
-						else {
-							DataStore.Add("tpfriendautoban", params[0], "none");
-							BZTJ.killJob(params[0]);
-						}
+                        var ispend = DataStore.Get("tpfriendpending", params[0]);
+					    var ispend2 = DataStore.Get("tpfriendpending2", params[1]);
+                        if (ispend != null && ispend2 != null) {
+                            DataStore.Add("tpfriendpending", params[0], null);
+                            DataStore.Add("tpfriendpending2", params[1], null);
+                            DataStore.Add("tpfriendcooldown", params[0], 7);
+                            DataStore.Add("tpfriendautoban", params[0], "none");
+                            if (playerfrom != null) {
+                                playerfrom.MessageFrom(systemname, "Teleport request timed out");
+                            }
+                            if (playerto != null) {
+                                playerto.MessageFrom(systemname, "Teleport request timed out");
+                            }
+                        }
                     break;
                 }
                 DataStore.Remove(BZTJ.DStable, p);
@@ -215,6 +218,11 @@ function On_Command(Player, cmd, args) {
 							return;
 						}
 					}
+                    var ispending = DataStore.Get("tpfriendpending2",  playertor.SteamID);
+                    if (ispending == null || ispending == "undefined") {
+                        Player.MessageFrom(systemname, "This player is pending a request. Wait a bit.");
+                        return;
+                    }
 
 					DataStore.Add("tpfriendcooldown", Player.SteamID, System.Environment.TickCount);
 					playertor.MessageFrom(systemname, "Teleport request from " + Player.Name + " to accept write /tpaccept");
@@ -234,7 +242,7 @@ function On_Command(Player, cmd, args) {
 					var def2 = (cooldown / 1000) / 60;
 					var done = Number(next2).toFixed(2); 
 					var done2 = Number(def2).toFixed(2); 
-					Player.MessageFrom(systemname, "Time Remaining: " + done + "/" + done2);
+					Player.MessageFrom(systemname, "Time Remaining: " + done + "/" + done2 + " mins");
 				}
 			}
 		break;
@@ -275,7 +283,7 @@ function On_Command(Player, cmd, args) {
 						var jobParams = [];
 						jobParams.push(String(Player.SteamID));
 						jobParams.push(String(playerfromm.SteamID));
-						BZTJ.addJob('tpfirst', tpdelay, iJSON.stringify(jobParams));
+						BZTJ.addJob('tpfirst', tpdelayy, iJSON.stringify(jobParams));
 					}
 					else {
 						playerfromm.MessageFrom(systemname, "Teleported!");
