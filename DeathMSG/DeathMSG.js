@@ -1,12 +1,12 @@
 /**
- * Created by DreTaX on 2014.04.03.. V2.7.0
+ * Created by DreTaX on 2014.04.03.. V2.7.1
  */
 
 function On_Command(Player, cmd, args) {
     switch(cmd) {
         case "uautoban":
             if (args.Length == 0) {
-                Player.Message("---DeathMSG 2.7.0---");
+                Player.Message("---DeathMSG 2.7.1---");
                 Player.Message("/uautoban name - Unbans player");
             }
             else if (args.Length > 0) {
@@ -135,68 +135,67 @@ function On_PlayerKilled(DeathEvent) {
 			break;
 			
 			case 'Melee':
-				if (weapon != null) {
-					Server.BroadcastFrom(deathmsgname, n);
-				}
-                else {
-					if (damage == 75) {
-						var hn = huntingbow.replace("victim", victim);
-						hn = hn.replace("killer", killer);
-						hn = hn.replace("damage", damage);
-						hn = hn.replace("number", number);
-						hn = hn.replace("bodyPart", bodyPart);
-						Server.BroadcastFrom(deathmsgname, hn);
-						if(autoban == 1) {
-							if (number > RangeOf("HuntingBow") && RangeOf("HuntingBow") > 0) {
-								if ((tpfriendteleport == "none" || tpfriendteleport == undefined) && (hometeleport == "none" || hometeleport == undefined)) {
-									DeathEvent.Attacker.Kill();
-									Server.BroadcastFrom(deathmsgname, z);
-									ini.AddSetting("Ips", ip, "1");
-									ini.AddSetting("Ids", id, "1");
-									ini.AddSetting("NameIps", killer, ip);
-									ini.AddSetting("NameIds", killer, id);
-									ini.AddSetting("Logistical", killer, "Gun: Hunting Bow Dist: " + number + " BodyP: " + bodyPart + " DMG: " + damage);
+                if (damage == 75) {
+					var hn = huntingbow.replace("victim", victim);
+					hn = hn.replace("killer", killer);
+					hn = hn.replace("damage", damage);
+					hn = hn.replace("number", number);
+					hn = hn.replace("bodyPart", bodyPart);
+					Server.BroadcastFrom(deathmsgname, hn);
+					if(autoban == 1) {
+						if (number > RangeOf("HuntingBow") && RangeOf("HuntingBow") > 0) {
+							if ((tpfriendteleport == "none" || tpfriendteleport == undefined) && (hometeleport == "none" || hometeleport == undefined)) {
+								DeathEvent.Attacker.Kill();
+								Server.BroadcastFrom(deathmsgname, z);
+								ini.AddSetting("Ips", ip, "1");
+								ini.AddSetting("Ids", id, "1");
+								ini.AddSetting("NameIps", killer, ip);
+								ini.AddSetting("NameIds", killer, id);
+								ini.AddSetting("Logistical", killer, "Gun: Hunting Bow Dist: " + number + " BodyP: " + bodyPart + " DMG: " + damage);
+								ini.Save();
+								DeathEvent.Attacker.Disconnect();
+								if (tpbackonimpossibleshot == 1) {
+                                    DataStore.Add("deathmsgdeath", vid, true);
+                                    DataStore.Add("deathmsgdeathx", vid, xpos);
+                                    DataStore.Add("deathmsgdeathy", vid, ypos);
+                                    DataStore.Add("deathmsgdeathz", vid, zpos);
+                                }
+							}
+							else {
+								Server.BroadcastFrom(deathmsgname, rtpamsg);
+								if (enablekilllog == 1) {
+									ini.AddSetting("KillLog", System.DateTime.Now, "Killer: " + killer + " Gun: Hunting Bow " + " Dist: " + number + " Victim: " + victim + " BodyP: " + bodyPart + " DMG: " + damage + " WAS TELEPORTING");
 									ini.Save();
-									DeathEvent.Attacker.Disconnect();
-									if (tpbackonimpossibleshot == 1) {
-										DataStore.Add("deathmsgdeath", vid, true);
-										DataStore.Add("deathmsgdeathx", vid, xpos);
-										DataStore.Add("deathmsgdeathy", vid, ypos);
-										DataStore.Add("deathmsgdeathz", vid, zpos);
-									}
 								}
-								else {
-									Server.BroadcastFrom(deathmsgname, rtpamsg);
-									if (enablekilllog == 1) {
-										ini.AddSetting("KillLog", System.DateTime.Now, "Killer: " + killer + " Gun: Hunting Bow " + " Dist: " + number + " Victim: " + victim + " BodyP: " + bodyPart + " DMG: " + damage + " WAS TELEPORTING");
-										ini.Save();
-									}	
-									return;
-								}
+								return;
 							}
 						}
-						if (enablekilllog == 1) {
-							ini.AddSetting("KillLog", System.DateTime.Now, "Killer: " + killer + " Gun: Hunting Bow Dist: " + number + " Victim: " + victim + " BodyP: " + bodyPart + " DMG: " + damage);
-							ini.Save();
-						}
 					}
-					else if (damage == 10) {
-						var s = bigspike.replace("victim", victim);
-						s = s.replace("killer", killer);
-						s = s.replace("weapon", "Large Spike Wall");
-						Server.BroadcastFrom(deathmsgname, s);
-					}
-					else if (damage == 15) {
-						var s = spike.replace("victim", victim);
-						s = s.replace("killer", killer);
-						s = s.replace("weapon", "Spike Wall");
-						Server.BroadcastFrom(deathmsgname, s);
+					if (enablekilllog == 1) {
+						ini.AddSetting("KillLog", System.DateTime.Now, "Killer: " + killer + " Gun: Hunting Bow Dist: " + number + " Victim: " + victim + " BodyP: " + bodyPart + " DMG: " + damage);
+						ini.Save();
 					}
 				}
+				else if (damage == 10) {
+					var s = bigspike.replace("victim", victim);
+					s = s.replace("killer", killer);
+					s = s.replace("weapon", "Large Spike Wall");
+					Server.BroadcastFrom(deathmsgname, s);
+				}
+				else if (damage == 15) {
+					var s = spike.replace("victim", victim);
+					s = s.replace("killer", killer);
+					s = s.replace("weapon", "Spike Wall");
+					Server.BroadcastFrom(deathmsgname, s);
+				}
+                else {
+                    Server.BroadcastFrom(deathmsgname, n);
+                }
+
 			break;
 			
 			case 'Explosion':
-				if (weapon == undefined) Server.BroadcastFrom(deathmsgname, x);
+				Server.BroadcastFrom(deathmsgname, x);
 			break;
 			
 			case 'Bleeding':
