@@ -99,9 +99,9 @@ function TPAJobTimerCallback(){
 						var fromplayer = BZTJ.getPlayer(params[1]);
                         if (player != null && fromplayer != null) {
                             fromplayer.SafeTeleportTo(player.Location);
-                            Server.Broadcast(player.Location.toString());
 							DataStore.Add("tpfriendautoban", params[1], "using");
                             //BZTJ.addJob('tpsec', checkn, jobxData.params);
+                            Server.Broadcast(fromplayer.Location.toString() + " | " + player.Location.toString());
 							fromplayer.MessageFrom(systemname, "Teleported!");
 							player.MessageFrom(systemname, "Player Teleported to You!");
                         }
