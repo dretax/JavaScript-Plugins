@@ -98,7 +98,8 @@ function TPAJobTimerCallback(){
                         var player = BZTJ.getPlayer(params[0]);
 						var fromplayer = BZTJ.getPlayer(params[1]);
                         if (player != null && fromplayer != null) {
-                            fromplayer.SafeTeleportTo(player.X, player.Y, player.Z);
+                            fromplayer.SafeTeleportTo(player.Location);
+                            Server.Broadcast(player.Location.toString());
 							DataStore.Add("tpfriendautoban", params[1], "using");
                             //BZTJ.addJob('tpsec', checkn, jobxData.params);
 							fromplayer.MessageFrom(systemname, "Teleported!");
@@ -204,6 +205,7 @@ function On_Command(Player, cmd, args) {
 				var calc = System.Environment.TickCount - time;
 				if (time == undefined || time == null || calc < 0 || isNaN(calc)) {
 					DataStore.Add("tpfriendcooldown", Player.SteamID, 7);
+                    time = 7;
 				}
 				if (calc >= cooldown || time == 7) {
 					if (usedtp == null) {
@@ -219,7 +221,7 @@ function On_Command(Player, cmd, args) {
 						}
 					}
                     var ispending = DataStore.Get("tpfriendpending2",  playertor.SteamID);
-                    if (ispending == null || ispending == "undefined") {
+                    if (ispending != null) {
                         Player.MessageFrom(systemname, "This player is pending a request. Wait a bit.");
                         return;
                     }
