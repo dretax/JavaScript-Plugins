@@ -6,7 +6,7 @@
 var TpFriend = {
     name: 		'TpFriend',
     author: 	'DreTaX',
-    version: 	'2.6.0'
+    version: 	'2.6.1'
 };
 
 var BZTJ = {
@@ -98,7 +98,7 @@ function TPAJobTimerCallback(){
                         var player = BZTJ.getPlayer(params[0]);
 						var fromplayer = BZTJ.getPlayer(params[1]);
                         if (player != null && fromplayer != null) {
-                            fromplayer.SafeTeleportTo(player.Location);
+                            fromplayer.SafeTeleportTo(player.X, player.Y, player.Z);
 							DataStore.Add("tpfriendautoban", params[1], "using");
                             //BZTJ.addJob('tpsec', checkn, jobxData.params);
 							fromplayer.MessageFrom(systemname, "Teleported!");
@@ -114,7 +114,7 @@ function TPAJobTimerCallback(){
                         var player = BZTJ.getPlayer(params[0]);
 						var fromplayer = BZTJ.getPlayer(params[1]);
 						if (player != null && fromplayer != null) {
-							fromplayer.SafeTeleportTo(player.Location);
+							fromplayer.SafeTeleportTo(player.X, player.Y, player.Z);
 							DataStore.Add("tpfriendautoban", params[1], "none");
 							fromplayer.MessageFrom(systemname, "You have been teleported here again for safety reasons in: " + checkn + " secs");
 						}
@@ -200,7 +200,7 @@ function On_Command(Player, cmd, args) {
 				var usedtp = DataStore.Get("tpfriendusedtp", Player.SteamID);
 				var calc = System.Environment.TickCount - time;
 				if (time == undefined || time == null || calc < 0 || isNaN(calc)) {
-					time = DataStore.Add("tpfriendcooldown", Player.SteamID, System.Environment.TickCount);
+					time = DataStore.Add("tpfriendcooldown", Player.SteamID, 7);
 				}
 				if (calc >= cooldown || time == 7) {
 					if (usedtp == null) {
@@ -279,7 +279,7 @@ function On_Command(Player, cmd, args) {
 					}
 					else {
 						playerfromm.MessageFrom(systemname, "Teleported!");
-						playerfromm.SafeTeleportTo(Player.Location);
+						playerfromm.SafeTeleportTo(Player.X, Player.Y, Player.Z);
 						DataStore.Add("tpfriendautoban", playerfromm.SteamID, "using");
 						var jobParams = [];
 						jobParams.push(String(Player.SteamID));
