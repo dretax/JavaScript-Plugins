@@ -203,7 +203,7 @@ function On_Command(Player, cmd, args) {
 				var usedtp = DataStore.Get("tpfriendusedtp", Player.SteamID);
 				var calc = System.Environment.TickCount - time;
 				if (time == undefined || time == null || calc < 0 || isNaN(calc)) {
-					time = DataStore.Add("tpfriendcooldown", Player.SteamID, 7);
+					DataStore.Add("tpfriendcooldown", Player.SteamID, 7);
 				}
 				if (calc >= cooldown || time == 7) {
 					if (usedtp == null) {
@@ -231,8 +231,8 @@ function On_Command(Player, cmd, args) {
 					DataStore.Add("tpfriendpending", Player.SteamID, playertor.SteamID);
 					DataStore.Add("tpfriendpending2",  playertor.SteamID, Player.SteamID);
 					var jobParams = [];
-						jobParams.push(String(Player.SteamID));
-						jobParams.push(String(playertor.SteamID));
+					jobParams.push(String(Player.SteamID));
+					jobParams.push(String(playertor.SteamID));
 					BZTJ.addJob('autokill', stuff, iJSON.stringify(jobParams));
 				}
 				else {
