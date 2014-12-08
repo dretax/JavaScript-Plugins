@@ -1,12 +1,12 @@
 /**
- * Created by DreTaX on 2014.04.03.. V2.7.1
+ * Created by DreTaX on 2014.04.03.. V2.8
  */
 
 function On_Command(Player, cmd, args) {
     switch(cmd) {
         case "uautoban":
             if (args.Length == 0) {
-                Player.Message("---DeathMSG 2.7.1---");
+                Player.Message("---DeathMSG 2.8---");
                 Player.Message("/uautoban name - Unbans player");
             }
             else if (args.Length > 0) {
@@ -72,6 +72,8 @@ function On_PlayerKilled(DeathEvent) {
 		var vid = DeathEvent.Victim.SteamID;
 		var tpfriendteleport = DataStore.Get("tpfriendautoban", id);
 		var hometeleport = DataStore.Add("homesystemautoban", id);
+        var spike = config.GetSetting("Settings", "spike");
+        var bigspike = config.GetSetting("Settings", "bigspike");
         //Msg bullet
         var n = message.replace("victim", victim);
         n = n.replace("killer", killer);
@@ -234,9 +236,10 @@ function On_PlayerKilled(DeathEvent) {
     }
 }
 
-function On_PlayerSpawning(Player, SpawnEvent) {
+function On_PlayerSpawned(Player, SpawnEvent) {
 	var id = Player.SteamID;
-	var died = DataStore.Get("deathmsgdeath", id);
+	var config = DeathMSGConfig();
+    var died = DataStore.Get("deathmsgdeath", id);
 	if (died) {
 		var x = DataStore.Get("deathmsgdeathx", id);
 		var y = DataStore.Get("deathmsgdeathy", id);
@@ -248,16 +251,11 @@ function On_PlayerSpawning(Player, SpawnEvent) {
 		DataStore.Remove("deathmsgdeathx", id);
 		DataStore.Remove("deathmsgdeathy", id);
 		DataStore.Remove("deathmsgdeathz", id);
-		Player.MessageFrom(deathmsgname, tpbackmsg);
+		Player.MessageFrom(deathmsgname, "Your death location: X: " + x + " | Y: " + y + " | Z: " + z);
+        var loc = Util.CreateVector(x, y, z);
+        Player.TeleportTo(loc);
+        Player.MessageFrom(deathmsgname, "You got teleported back to your stuff.");
 	}
-}
-
-function On_PlayerSpawned(Player, SpawnEvent) {
-	var id = Player.SteamID;
-	var config = DeathMSGConfig();
-	var hackc = config.GetSetting("Settings", "FlySpeedCheck");
-	if (hackc == 0) return;
-	DataStore.Add('EquinoxAntiCheat', id, Player.X+", "+Player.Y+", "+Player.Z);
 }
 
 function isMod(id) {
