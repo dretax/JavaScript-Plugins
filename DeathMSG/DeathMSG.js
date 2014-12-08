@@ -57,7 +57,6 @@ function On_PlayerKilled(DeathEvent) {
 		var deathmsgname = config.GetSetting("Settings", "deathmsgname");
 		var enablekilllog = config.GetSetting("Settings", "killog");
 		var tpamsg = config.GetSetting("Settings", "TpaMsg");
-		var tpbackonimpossibleshot = config.GetSetting("Settings", "tpbackonimpossibleshot");
 		var tpbackmsg = config.GetSetting("Settings", "tpbackmsg");
 		//Other Vars
 		var killer = DeathEvent.Attacker.Name;
