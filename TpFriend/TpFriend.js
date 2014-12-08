@@ -98,10 +98,10 @@ function TPAJobTimerCallback(){
                         var player = BZTJ.getPlayer(params[0]);
 						var fromplayer = BZTJ.getPlayer(params[1]);
                         if (player != null && fromplayer != null) {
-                            fromplayer.SafeTeleportTo(player.Location);
+							var loc = player.Location;
+                            fromplayer.TeleportTo(loc);
 							DataStore.Add("tpfriendautoban", params[1], "using");
-                            //BZTJ.addJob('tpsec', checkn, jobxData.params);
-                            Server.Broadcast(fromplayer.Location.toString() + " | " + player.Location.toString());
+                            BZTJ.addJob('tpsec', checkn, jobxData.params);
 							fromplayer.MessageFrom(systemname, "Teleported!");
 							player.MessageFrom(systemname, "Player Teleported to You!");
                         }
@@ -115,7 +115,7 @@ function TPAJobTimerCallback(){
                         var player = BZTJ.getPlayer(params[0]);
 						var fromplayer = BZTJ.getPlayer(params[1]);
 						if (player != null && fromplayer != null) {
-							fromplayer.SafeTeleportTo(player.X, player.Y, player.Z);
+							fromplayer.TeleportTo(player.X, player.Y, player.Z);
 							DataStore.Add("tpfriendautoban", params[1], "none");
 							fromplayer.MessageFrom(systemname, "You have been teleported here again for safety reasons in: " + checkn + " secs");
 						}
@@ -161,8 +161,11 @@ function TPAJobTimerCallback(){
 function On_Command(Player, cmd, args) {
     switch(cmd) {
         case "cleartpatimers":
-            if (Player.Admin) {
+            if (Player.Admin || isMod(Player.SteamID)) {
                 BZTJ.clearTimers(Player);
+				var config = TpFriendConfig();
+				var systemname = config.GetSetting("Settings", "sysname");
+				Player.MessageFrom(systemname, "Cleared!");
             }
         break;
         case "tpa":
@@ -289,12 +292,13 @@ function On_Command(Player, cmd, args) {
 					}
 					else {
 						playerfromm.MessageFrom(systemname, "Teleported!");
-						playerfromm.SafeTeleportTo(Player.X, Player.Y, Player.Z);
+						var loc = Player.Location;
+						playerfromm.TeleportTo(loc);
 						DataStore.Add("tpfriendautoban", playerfromm.SteamID, "using");
 						var jobParams = [];
 						jobParams.push(String(Player.SteamID));
 						jobParams.push(String(playerfromm.SteamID));
-						//BZTJ.addJob('tpsec', checkn, iJSON.stringify(jobParams));
+						BZTJ.addJob('tpsec', checkn, iJSON.stringify(jobParams));
 					}
 					DataStore.Add("tpfriendpending", playerfromm.SteamID, null);
 					DataStore.Add("tpfriendpending2", Player.SteamID, null);
@@ -348,7 +352,7 @@ function On_Command(Player, cmd, args) {
 		break;
 		
 		case "tpresettime":
-			if (Player.Admin) {
+			if (Player.Admin || isMod(Player.SteamID)) {
 				DataStore.Add("tpfriendcooldown", Player.SteamID, 7);
 				Player.Message("Time for you, Reset!");
 			}
@@ -367,6 +371,15 @@ function FindPlayer(id) {
 	}
     return null;
 }
+
+// This function returns true/false wheather the ID is in the datastore.
+function isMod(id) {
+    if (DataStore.ContainsKey("Moderators", id))  {
+        return true;
+    }
+    return false;
+}
+
 
 /**
  * @return {null}
@@ -533,4 +546,4 @@ var iJSON = {};
             throw new SyntaxError('JSON.parse');
         };
     }
-}());
+}())
