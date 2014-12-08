@@ -47,7 +47,6 @@ function On_Command(Player, cmd, args) {
 }
 function On_PlayerKilled(DeathEvent) {
     if (DeathEvent.Attacker != DeathEvent.Victim && DeathEvent.DamageType != null && DeathEvent.Victim != null && DeathEvent.Attacker != null && DeathEvent.DamageEvent.bodyPart != null && !IsAnimal(DeathEvent.Attacker.Name)) {
-		recordInventory(DeathEvent.Victim);
         var config = DeathMSGConfig();
 		var autoban = config.GetSetting("Settings", "autoban");
 		var message = config.GetSetting("Settings", "msg");
@@ -203,6 +202,7 @@ function On_PlayerKilled(DeathEvent) {
 				Server.BroadcastFrom(deathmsgname, n);
 			break;
 		}
+        return;
     }
     //Animal Stuff
     if (DeathEvent.Attacker != DeathEvent.Victim && DeathEvent.Victim != null && DeathEvent.Attacker != null && DeathEvent.DamageType != null && IsAnimal(DeathEvent.Attacker.Name)) {
@@ -218,6 +218,7 @@ function On_PlayerKilled(DeathEvent) {
             animalk = animalk.replace("killer", killer);
             Server.BroadcastFrom(deathmsgname, animalk);
         }
+        return;
     }
     // Suicide
     if (DeathEvent.Attacker == DeathEvent.Victim && DeathEvent.Victim != null && DeathEvent.Attacker != null && !IsAnimal(DeathEvent.Attacker.Name)) {
