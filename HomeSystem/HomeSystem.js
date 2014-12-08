@@ -5,7 +5,7 @@
 var HomeSystem = {
     name: 		'HomeSystem',
     author: 	'DreTaX',
-    version: 	'2.4.6'
+    version: 	'2.4.7'
 };
 
 var BZHJ = {
@@ -110,6 +110,7 @@ function JobTimerCallback(){
 								DataStore.Add("homesystemautoban", params[0], "using");
 								var loc = Util.CreateVector(params[1], params[2], params[3]);
 								joinplayer.SafeTeleportTo(loc);
+                                DataStore.Add("homesystemautoban", params[0], "none");
 								//BZHJ.addJob('jointp', checkn, jobxData.params);
 							}
 							else {
@@ -126,6 +127,7 @@ function JobTimerCallback(){
 								var loc = Util.CreateVector(params[1], params[2], params[3]);
 								joinplayer.SafeTeleportTo(loc);
 								joinplayer.MessageFrom(homesystemname, "You have been teleported here again for safety reasons in: " + checkn + " secs");
+                                DataStore.Add("homesystemautoban", params[0], "none");
 							}
 							else {
 								DataStore.Add("homesystemautoban", params[0], "none");
@@ -141,6 +143,7 @@ function JobTimerCallback(){
 								var loc = Util.CreateVector(params[1], params[2], params[3]);
 								_fromPlayer.SafeTeleportTo(loc);
 								_fromPlayer.MessageFrom(homesystemname, "You have been teleported here again for safety reasons in: " + checkn + " secs");
+                                DataStore.Add("homesystemautoban", params[0], "none");
 							}
 							else {
 								DataStore.Add("homesystemautoban", params[0], "none");
@@ -156,6 +159,7 @@ function JobTimerCallback(){
 								var loc = Util.CreateVector(params[1], params[2], params[3]);
 								rplayer.SafeTeleportTo(loc);
 								rplayer.MessageFrom(homesystemname, "You have been teleported here again for safety reasons in: " + checkn + " secs");
+                                DataStore.Add("homesystemautoban", params[0], "none");
 							}
 							else {
 								DataStore.Add("homesystemautoban", params[0], "none");
@@ -182,6 +186,7 @@ function JobTimerCallback(){
 										DataStore.Add("homesystemautoban", params[0], "using");
 										_fromPlayer.SafeTeleportTo(loc);
 										_fromPlayer.Notice("You have been teleported home.");
+                                        DataStore.Add("homesystemautoban", params[0], "none");
 										//BZHJ.addJob('mytestt', checkn, jobxData.params);
 									}
 								}
@@ -189,6 +194,7 @@ function JobTimerCallback(){
 									DataStore.Add("homesystemautoban", params[0], "using");
 									_fromPlayer.SafeTeleportTo(loc);
 									_fromPlayer.Notice("You have been teleported home.");
+                                    DataStore.Add("homesystemautoban", params[0], "none");
 									//BZHJ.addJob('mytestt', checkn, jobxData.params);
 								}
 							}
@@ -208,6 +214,7 @@ function JobTimerCallback(){
 								rplayer.MessageFrom(homesystemname, "You have been teleported to a random location!");
 								rplayer.MessageFrom(homesystemname, "Type /setdefaulthome HOMENAME");
 								rplayer.MessageFrom(homesystemname, "To spawn at your home!");
+                                DataStore.Add("homesystemautoban", params[0], "none");
 								//BZHJ.addJob('randomtp', checkn, jobxData.params);
 							}
 							else {
@@ -224,6 +231,7 @@ function JobTimerCallback(){
 								var loc = Util.CreateVector(params[1], params[2], params[3]);
 								spawntpplayer.SafeTeleportTo(loc);
 								spawntpplayer.MessageFrom(homesystemname, "You have been teleported here again for safety reasons in: " + checkn + " secs");
+                                DataStore.Add("homesystemautoban", params[0], "none");
 							}
 							else {
 								DataStore.Add("homesystemautoban", params[0], "none");
