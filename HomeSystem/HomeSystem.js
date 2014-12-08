@@ -139,7 +139,7 @@ function JobTimerCallback(){
 							var checkn = config.GetSetting("Settings", "safetpcheck");
 							var _fromPlayer = BZHJ.getPlayer(params[0]);
 							if (_fromPlayer != null) {
-								DataStore.Add("homesystemautoban", params[0], "using");
+								//DataStore.Add("homesystemautoban", params[0], "using");
 								var loc = Util.CreateVector(params[1], params[2], params[3]);
 								_fromPlayer.SafeTeleportTo(loc);
 								_fromPlayer.MessageFrom(homesystemname, "You have been teleported here again for safety reasons in: " + checkn + " secs");
@@ -378,11 +378,13 @@ function On_Command(Player, cmd, args) {
 
                             if (tpdelay == 0) {
 								DataStore.Add("homesystemautoban", id, "using");
-                                Player.TeleportTo(check[0], check[1], check[2]);
+                                var loc = Util.CreateVector(check[0], check[1], check[2]);
+								Player.SafeTeleportTo(loc);
                                 //Data.AddTableValue("home_cooldown", Player.SteamID, System.Environment.TickCount);
 								DataStore.Add("home_cooldown", id, System.Environment.TickCount);
                                 Player.MessageFrom(homesystemname, "Teleported to home!");
-                                BZHJ.addJob('mytestt', checkn, iJSON.stringify(jobParams));
+                                DataStore.Add("homesystemautoban", id, "none");
+                                //BZHJ.addJob('mytestt', checkn, iJSON.stringify(jobParams));
                             }
                             else {
                                 //Data.AddTableValue("home_cooldown", Player.SteamID, System.Environment.TickCount);
