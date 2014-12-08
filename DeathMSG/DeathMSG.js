@@ -239,11 +239,13 @@ function On_PlayerKilled(DeathEvent) {
 function On_PlayerSpawned(Player, SpawnEvent) {
 	var id = Player.SteamID;
 	var config = DeathMSGConfig();
+    var deathmsgname = config.GetSetting("Settings", "deathmsgname");
     var died = DataStore.Get("deathmsgdeath", id);
 	if (died) {
 		var x = DataStore.Get("deathmsgdeathx", id);
 		var y = DataStore.Get("deathmsgdeathy", id);
 		var z = DataStore.Get("deathmsgdeathz", id);
+        var loc = Util.CreateVector(x, y, z);
 		SpawnEvent.X = x;
 		SpawnEvent.Y = y;
 		SpawnEvent.Z = z;
@@ -252,7 +254,6 @@ function On_PlayerSpawned(Player, SpawnEvent) {
 		DataStore.Remove("deathmsgdeathy", id);
 		DataStore.Remove("deathmsgdeathz", id);
 		Player.MessageFrom(deathmsgname, "Your death location: X: " + x + " | Y: " + y + " | Z: " + z);
-        var loc = Util.CreateVector(x, y, z);
         Player.TeleportTo(loc);
         Player.MessageFrom(deathmsgname, "You got teleported back to your stuff.");
 	}
