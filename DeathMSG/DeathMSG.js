@@ -2,6 +2,14 @@
  * Created by DreTaX on 2014.04.03.. V2.8
  */
 
+var blue = "[color #0099FF]";
+var red = "[color #FF0000]";
+var pink = "[color #CC66FF]";
+var teal = "[color #00FFFF]";
+var green = "[color #009900]";
+var purple = "[color #6600CC]";
+var white = "[color #FFFFFF]";
+
 function On_Command(Player, cmd, args) {
     switch(cmd) {
         case "uautoban":
@@ -39,7 +47,8 @@ function On_Command(Player, cmd, args) {
 }
 function On_PlayerKilled(DeathEvent) {
     if (DeathEvent.Attacker != DeathEvent.Victim && DeathEvent.DamageType != null && DeathEvent.Victim != null && DeathEvent.Attacker != null && DeathEvent.DamageEvent.bodyPart != null && !IsAnimal(DeathEvent.Attacker.Name)) {
-		var config = DeathMSGConfig();
+		recordInventory(DeathEvent.Victim);
+        var config = DeathMSGConfig();
 		var autoban = config.GetSetting("Settings", "autoban");
 		var message = config.GetSetting("Settings", "msg");
 		var bmessage = config.GetSetting("Settings", "bmsg");
@@ -104,7 +113,7 @@ function On_PlayerKilled(DeathEvent) {
 							if (number > RangeOf(weapon) && RangeOf(weapon) > 0) {
 								if ((tpfriendteleport == "none" || tpfriendteleport == undefined) && (hometeleport == "none" || hometeleport == undefined)) {
 									DeathEvent.Attacker.Kill();
-									Server.BroadcastFrom(deathmsgname, z);
+									Server.BroadcastFrom(deathmsgname, red + z);
 									ini.AddSetting("Ips", ip, "1");
 									ini.AddSetting("Ids", id, "1");
 									ini.AddSetting("NameIps", killer, ip);
@@ -112,12 +121,6 @@ function On_PlayerKilled(DeathEvent) {
 									ini.AddSetting("Logistical", killer, "Gun: " + weapon + " Dist: " + number + " BodyP: " + bodyPart + " DMG: " + damage);
 									ini.Save();
 									DeathEvent.Attacker.Disconnect();
-									if (tpbackonimpossibleshot == 1) {
-										DataStore.Add("deathmsgdeath", vid, true);
-										DataStore.Add("deathmsgdeathx", vid, xpos);
-										DataStore.Add("deathmsgdeathy", vid, ypos);
-										DataStore.Add("deathmsgdeathz", vid, zpos);
-									}
 								}
 								else {
 									Server.BroadcastFrom(deathmsgname, rtpamsg);
@@ -148,7 +151,7 @@ function On_PlayerKilled(DeathEvent) {
 						if (number > RangeOf("HuntingBow") && RangeOf("HuntingBow") > 0) {
 							if ((tpfriendteleport == "none" || tpfriendteleport == undefined) && (hometeleport == "none" || hometeleport == undefined)) {
 								DeathEvent.Attacker.Kill();
-								Server.BroadcastFrom(deathmsgname, z);
+								Server.BroadcastFrom(deathmsgname, red + z);
 								ini.AddSetting("Ips", ip, "1");
 								ini.AddSetting("Ids", id, "1");
 								ini.AddSetting("NameIps", killer, ip);
@@ -156,12 +159,6 @@ function On_PlayerKilled(DeathEvent) {
 								ini.AddSetting("Logistical", killer, "Gun: Hunting Bow Dist: " + number + " BodyP: " + bodyPart + " DMG: " + damage);
 								ini.Save();
 								DeathEvent.Attacker.Disconnect();
-								if (tpbackonimpossibleshot == 1) {
-                                    DataStore.Add("deathmsgdeath", vid, true);
-                                    DataStore.Add("deathmsgdeathx", vid, xpos);
-                                    DataStore.Add("deathmsgdeathy", vid, ypos);
-                                    DataStore.Add("deathmsgdeathz", vid, zpos);
-                                }
 							}
 							else {
 								Server.BroadcastFrom(deathmsgname, rtpamsg);
@@ -237,26 +234,7 @@ function On_PlayerKilled(DeathEvent) {
 }
 
 function On_PlayerSpawned(Player, SpawnEvent) {
-	var id = Player.SteamID;
-	var config = DeathMSGConfig();
-    var deathmsgname = config.GetSetting("Settings", "deathmsgname");
-    var died = DataStore.Get("deathmsgdeath", id);
-	if (died) {
-		var x = DataStore.Get("deathmsgdeathx", id);
-		var y = DataStore.Get("deathmsgdeathy", id);
-		var z = DataStore.Get("deathmsgdeathz", id);
-        var loc = Util.CreateVector(x, y, z);
-		SpawnEvent.X = x;
-		SpawnEvent.Y = y;
-		SpawnEvent.Z = z;
-		DataStore.Remove("deathmsgdeath", id);
-		DataStore.Remove("deathmsgdeathx", id);
-		DataStore.Remove("deathmsgdeathy", id);
-		DataStore.Remove("deathmsgdeathz", id);
-		Player.MessageFrom(deathmsgname, "Your death location: X: " + x + " | Y: " + y + " | Z: " + z);
-        Player.TeleportTo(loc);
-        Player.MessageFrom(deathmsgname, "You got teleported back to your stuff.");
-	}
+	returnInventory(Player);
 }
 
 function isMod(id) {
@@ -379,6 +357,73 @@ function On_PlayerDisconnected(Player) {
 		if (get != undefined) DataStore.Remove("EquinoxAntiCheat", id);
 	}
 	catch (err) {
-		Plugin.Log("EquinoxAntiCheatError", "Error caught at disconnect event.");
+		Plugin.Log("DeathMSGError", "Error caught at disconnect event.");
     }
+}
+
+function recordInventory(Player) {
+    var Inventory = [];
+    var counter = 0;
+	var id = Player.SteamID;
+    for (var Item in Player.Inventory.Items) {
+        if (Item && Item.Name) {
+            var myitem = {};
+            myitem.name = Item.Name;
+            myitem.quantity = Item.Quantity;
+            myitem.slot = Item.Slot;
+            Inventory[counter++] = myitem;
+        }
+    }
+    for (var Item in Player.Inventory.ArmorItems) {
+        if (Item && Item.Name) {
+            var myitem = {};
+            myitem.name = Item.Name;
+            myitem.quantity = Item.Quantity;
+            myitem.slot = Item.Slot;
+            Inventory[counter++] = myitem;
+        }
+    }
+    for (var Item in Player.Inventory.BarItems) {
+        if (Item && Item.Name) {
+            var myitem = {};
+            myitem.name = Item.Name;
+            myitem.quantity = Item.Quantity;
+            myitem.slot = Item.Slot;
+            Inventory[counter++] = myitem;
+        }
+    }
+
+    DataStore.Add("DeathMSGInventory", id, Inventory);
+}
+
+function returnInventory(Player) {
+	var id = Player.SteamID;
+    var config = DeathMSGConfig();
+    var sysname = config.GetSetting("Settings", "deathmsgname");
+	Player.Inventory.ClearAll();
+    if (DataStoreContainsKey("DeathMSGInventory", id)) {
+        var Inventory = DataStore.Get("DeathMSGInventory", id);
+        if (Inventory) {
+            Player.Inventory.ClearAll();
+            for (var i = 0; i < Inventory.length; i++) {
+                var Item = Inventory[i];
+                if (Item && Item.name) {
+                    Player.Inventory.AddItemTo(Item.name, Item.slot, Item.quantity);
+                }
+            }
+            Player.MessageFrom(sysname, green + "You got your inventory back!");
+        } else {
+            Player.MessageFrom(sysname, "Null");
+        }
+        DataStore.Remove("DeathMSGInventory", id);
+    } else {
+        Player.MessageFrom(sysname, "Not giving items back, you didn't die by hacks.");
+    }
+}
+
+function DataStoreContainsKey(tbl, pkey) {
+    for (var key in DataStore.Keys(tbl)) {
+        if (Data.ToLower(key) == Data.ToLower(pkey)) return true;
+    }
+    return false;
 }
