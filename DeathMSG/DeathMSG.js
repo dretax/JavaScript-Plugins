@@ -67,9 +67,7 @@ function On_PlayerKilled(DeathEvent) {
         var damage = Math.round(DeathEvent.DamageAmount);
         var killerloc = DeathEvent.Attacker.Location;
         var location = DeathEvent.Victim.Location;
-		var xpos = Player.X;
-		var ypos = Player.Y;
-		var zpos = Player.Z;
+        var stringloc = location.toString();
         var distance = Util.GetVectorsDistance(killerloc, location);
         var number = Number(distance).toFixed(2);
         var bodyPart = BD(DeathEvent.DamageEvent.bodyPart);
@@ -121,6 +119,7 @@ function On_PlayerKilled(DeathEvent) {
 									ini.AddSetting("Logistical", killer, "Gun: " + weapon + " Dist: " + number + " BodyP: " + bodyPart + " DMG: " + damage);
 									ini.Save();
 									DeathEvent.Attacker.Disconnect();
+                                    DataStore.Add("DeathMSGBAN", vid, stringloc);
 								}
 								else {
 									Server.BroadcastFrom(deathmsgname, rtpamsg);
@@ -159,6 +158,7 @@ function On_PlayerKilled(DeathEvent) {
 								ini.AddSetting("Logistical", killer, "Gun: Hunting Bow Dist: " + number + " BodyP: " + bodyPart + " DMG: " + damage);
 								ini.Save();
 								DeathEvent.Attacker.Disconnect();
+                                DataStore.Add("DeathMSGBAN", vid, stringloc);
 							}
 							else {
 								Server.BroadcastFrom(deathmsgname, rtpamsg);
@@ -234,7 +234,17 @@ function On_PlayerKilled(DeathEvent) {
 }
 
 function On_PlayerSpawned(Player, SpawnEvent) {
-	returnInventory(Player);
+    var id = Player.SteamID;
+	if (DataStore.ContainsKey("DeathMSGBAN", id)) {
+        var get = DataStore.Get("DeathMSGBAN", id);
+        var loc = Replace(get);
+        var newloc = Util.CreateVector(loc[0], loc[1], loc[2]);
+        Player.TeleportTo(newloc);
+        var config = DeathMSGConfig();
+        var deathmsgname = config.GetSetting("Settings", "deathmsgname");
+        Player.MessageFrom(deathmsgname, green + "You got teleported back where you died!");
+        DataStore.Remove("DeathMSGBAN", id);
+    }
 }
 
 function isMod(id) {
@@ -361,69 +371,9 @@ function On_PlayerDisconnected(Player) {
     }
 }
 
-function recordInventory(Player) {
-    var Inventory = [];
-    var counter = 0;
-	var id = Player.SteamID;
-    for (var Item in Player.Inventory.Items) {
-        if (Item && Item.Name) {
-            var myitem = {};
-            myitem.name = Item.Name;
-            myitem.quantity = Item.Quantity;
-            myitem.slot = Item.Slot;
-            Inventory[counter++] = myitem;
-        }
-    }
-    for (var Item in Player.Inventory.ArmorItems) {
-        if (Item && Item.Name) {
-            var myitem = {};
-            myitem.name = Item.Name;
-            myitem.quantity = Item.Quantity;
-            myitem.slot = Item.Slot;
-            Inventory[counter++] = myitem;
-        }
-    }
-    for (var Item in Player.Inventory.BarItems) {
-        if (Item && Item.Name) {
-            var myitem = {};
-            myitem.name = Item.Name;
-            myitem.quantity = Item.Quantity;
-            myitem.slot = Item.Slot;
-            Inventory[counter++] = myitem;
-        }
-    }
-
-    DataStore.Add("DeathMSGInventory", id, Inventory);
-}
-
-function returnInventory(Player) {
-	var id = Player.SteamID;
-    var config = DeathMSGConfig();
-    var sysname = config.GetSetting("Settings", "deathmsgname");
-	Player.Inventory.ClearAll();
-    if (DataStoreContainsKey("DeathMSGInventory", id)) {
-        var Inventory = DataStore.Get("DeathMSGInventory", id);
-        if (Inventory) {
-            Player.Inventory.ClearAll();
-            for (var i = 0; i < Inventory.length; i++) {
-                var Item = Inventory[i];
-                if (Item && Item.name) {
-                    Player.Inventory.AddItemTo(Item.name, Item.slot, Item.quantity);
-                }
-            }
-            Player.MessageFrom(sysname, green + "You got your inventory back!");
-        } else {
-            Player.MessageFrom(sysname, "Null");
-        }
-        DataStore.Remove("DeathMSGInventory", id);
-    } else {
-        Player.MessageFrom(sysname, "Not giving items back, you didn't die by hacks.");
-    }
-}
-
-function DataStoreContainsKey(tbl, pkey) {
-    for (var key in DataStore.Keys(tbl)) {
-        if (Data.ToLower(key) == Data.ToLower(pkey)) return true;
-    }
-    return false;
+function Replace(String) {
+    String = String.replace("(", "");
+    String = String.replace(")", "");
+    String = String.split(",");
+    return String;
 }
