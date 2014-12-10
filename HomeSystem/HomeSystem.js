@@ -101,7 +101,7 @@ function JobTimerCallback(){
 					if (DataStore.Get(BZHJ.DStable, p)) DataStore.Remove(BZHJ.DStable, p);
 					continue;
 				}
-				//try {
+				try {
 					switch(jobxData.callback) {
 						case "jointpdelay":
 							var checkn = config.GetSetting("Settings", "safetpcheck");
@@ -306,10 +306,10 @@ function JobTimerCallback(){
 						
 					}
 					DataStore.Remove(BZHJ.DStable, p);
-				/*} catch(err) {
+				} catch(err) {
 					BZHJ.killJob(params[0]);
 					Plugin.Log("HomeSystemError", "Error caught at Jobtimer method. Job removed.");
-				}*/
+				}
 			}
 		}
     } else {
