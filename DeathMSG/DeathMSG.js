@@ -45,6 +45,7 @@ function On_Command(Player, cmd, args) {
         break;
     }
 }
+
 function On_PlayerKilled(DeathEvent) {
     if (DeathEvent.Attacker != DeathEvent.Victim && DeathEvent.DamageType != null && DeathEvent.Victim != null && DeathEvent.Attacker != null && DeathEvent.DamageEvent.bodyPart != null && !IsAnimal(DeathEvent.Attacker.Name)) {
         var config = DeathMSGConfig();
@@ -248,7 +249,9 @@ function On_PlayerSpawned(Player, SpawnEvent) {
 }
 
 function isMod(id) {
-	if (DataStore.ContainsKey("Moderators", id)) return true;
+	if (DataStore.ContainsKey("Moderators", id)) {
+        return true;
+    }
 	return false;
 }
 
