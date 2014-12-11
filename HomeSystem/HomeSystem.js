@@ -910,7 +910,7 @@ function On_EntityDeployed(Player, Entity) {
 	var config = HomeConfig();
     var antihack = config.GetSetting("Settings", "Antihack");
     var homesystemname = config.GetSetting("Settings", "homesystemname");
-	if (Entity != null) {
+	if (Entity != null && Player != null) {
 		if (antihack == "1") {
 			var inventory = Player.Inventory;
 			if (Entity.Name == "SleepingBagA") {
