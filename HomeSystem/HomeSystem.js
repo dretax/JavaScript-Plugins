@@ -61,7 +61,7 @@ var BZHJ = {
 			}
 			return null;
 		} catch(err) {
-			Plugin.Log("HomeSystemError", "Error caught at getPlayer method. Player was null, removing it from the timer.");
+			//Plugin.Log("HomeSystemError", "Error caught at getPlayer method. Player was null, removing it from the timer.");
 			return null;
 		}
     },
@@ -84,7 +84,7 @@ function JobTimerCallback(){
 		var config = HomeConfig();
         var homesystemname = config.GetSetting("Settings", "homesystemname");
 		for (var p in pending) {
-			if(epoch >= parseInt(p)) {
+			if (epoch >= parseInt(p)) {
 				var jobData = DataStore.Get(BZHJ.DStable, p);
 				var jobxData;
 				var params;
@@ -308,7 +308,7 @@ function JobTimerCallback(){
 					DataStore.Remove(BZHJ.DStable, p);
 				} catch(err) {
 					BZHJ.killJob(params[0]);
-					Plugin.Log("HomeSystemError", "Error caught at Jobtimer method. Job removed.");
+					//Plugin.Log("HomeSystemError", "Error caught at Jobtimer method. Job removed.");
 				}
 			}
 		}
@@ -979,8 +979,8 @@ function On_PlayerConnected(Player) {
 		id = Player.SteamID;
 	}
 	catch(err) {
-		Plugin.Log("HomeSystemError", "Error caught at conn method.");
-		return;
+		//Plugin.Log("HomeSystemError", "Error caught at conn method.");
+        return
 	}
 	jobParams.push(String(id));
 	BZHJ.addJob('ByPassRoof', jointpdelay, iJSON.stringify(jobParams));
@@ -1002,9 +1002,8 @@ function On_PlayerDisconnected(Player) {
 			}
 		}
 	}
-	catch(err) {
-		Plugin.Log("HomeSystemError", "Error caught at disc method.");
-		return;
+	catch(ignore) {
+		//Plugin.Log("HomeSystemError", "Error caught at disc method.");
 	}
 }
 
