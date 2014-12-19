@@ -91,20 +91,22 @@ function JobTimerCallback(){
 				try {
 					jobxData = iJSON.parse(jobData);
 					// Lets do the shitty checks here
-					if(jobxData.params == "undefined" || jobxData.params == undefined)
+					if(jobxData.params == "undefined" || jobxData.params == undefined || jobxData.params == null)
 					{
 						DataStore.Remove(BZHJ.DStable, p);
 						continue;
 					}
 					params = iJSON.parse(jobxData.params);
 				} catch(err) {
-					if (DataStore.Get(BZHJ.DStable, p)) DataStore.Remove(BZHJ.DStable, p);
+					if (DataStore.Get(BZHJ.DStable, p)) {
+                        DataStore.Remove(BZHJ.DStable, p);
+                    }
 					continue;
 				}
-				try {
+				//try {
 					switch(jobxData.callback) {
 						case "jointpdelay":
-							var checkn = config.GetSetting("Settings", "safetpcheck");
+							//var checkn = config.GetSetting("Settings", "safetpcheck");
 							var joinplayer = BZHJ.getPlayer(params[0]);
 							if (joinplayer != null) {
 								DataStore.Add("homesystemautoban", params[0], "using");
@@ -168,7 +170,7 @@ function JobTimerCallback(){
 						break;
 
 						case "delay":
-							var checkn = config.GetSetting("Settings", "safetpcheck");
+						    //var checkn = config.GetSetting("Settings", "safetpcheck");
 							var _fromPlayer = BZHJ.getPlayer(params[0]);
 							var movec = config.GetSetting("Settings", "movecheck");
 							if (_fromPlayer != null) {
@@ -306,10 +308,10 @@ function JobTimerCallback(){
 						
 					}
 					DataStore.Remove(BZHJ.DStable, p);
-				} catch(err) {
+				/*} catch(err) {
 					BZHJ.killJob(params[0]);
 					//Plugin.Log("HomeSystemError", "Error caught at Jobtimer method. Job removed.");
-				}
+				}*/
 			}
 		}
     } else {
